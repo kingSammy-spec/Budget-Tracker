@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ===== SEO META TAGS ===== -->
+    <meta name="description" content="SaveSmart is a free personal finance tracker to log expenses, monitor income, and receive AI-powered budget suggestions using the 50/30/20 rule.">
+    <meta name="keywords" content="budget tracker, personal finance, expense tracker, income tracker, money management, savings app, 50 30 20 rule">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="SaveSmart">
+    <link rel="canonical" href="./">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="SaveSmart | Personal Budget & Finance Tracker">
+    <meta property="og:description" content="SaveSmart is a free personal finance tracker to log expenses, monitor income, and receive AI-powered budget suggestions using the 50/30/20 rule.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&h=630&q=80">
+    <meta property="og:site_name" content="SaveSmart">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SaveSmart | Personal Budget & Finance Tracker">
+    <meta name="twitter:description" content="SaveSmart is a free personal finance tracker to log expenses, monitor income, and receive AI-powered budget suggestions using the 50/30/20 rule.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&h=630&q=80">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SaveSmart",
+      "description": "SaveSmart is a free personal finance tracker to log expenses, monitor income, and receive AI-powered budget suggestions using the 50/30/20 rule.",
+      "applicationCategory": "Utility",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <!-- ========================= -->
+    <title>SaveSmart | Personal Finance Tracker</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    <link rel="stylesheet" href="style.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- 1. Transaction Details Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modalBody">
+                <!-- Injected dynamically by script.js -->
+            </div>
+            
+            <!-- Strategic Campaign Block inside detail view -->
+            <div class="modal-ad">
+                <span class="ad-tag">FINANCIAL PARTNER</span>
+                <div class="modal-ad-grid">
+                    <img id="detail-ad-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=300&h=200&q=80" alt="Ad">
+                    <div>
+                        <h4 id="detail-ad-title">Retire Early with SmartInvest</h4>
+                        <p id="detail-ad-desc">Learn the 3 keys to building a passive income stream that lasts. Free webinar tonight.</p>
+                        <button class="ad-btn" id="detail-ad-btn" aria-label="Detail Ad Btn">Save My Seat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Budget Prompt Modal -->
+    <div id="budgetPromptModal" class="modal" style="z-index: 10000;">
+        <div class="modal-content" style="max-width: 500px; text-align: center; padding: 3rem;">
+            <div style="font-size: 3.5rem; margin-bottom: 1rem;">💰</div>
+            <h2 style="font-size: 2.2rem; font-family: inherit; font-weight:700; margin-bottom: 1rem; color: #111;">Welcome to SaveSmart</h2>
+            <p style="font-size: 1.05rem; color: #555; line-height: 1.6; margin-bottom: 2rem;">Please enter your total monthly budget or income to get started with personalized estimates and suggestions.</p>
+            <form id="budget-form" onsubmit="event.preventDefault(); submitInitialBudget();">
+                <input type="number" step="0.01" id="initial-budget-input" required placeholder="e.g. 5000.00" style="width: 100%; padding: 1rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; font-family: inherit; font-size: 1.1rem; outline: none; margin-bottom: 1.5rem; text-align: center;">
+                <button type="submit" class="ad-btn" style="width: 100%; padding: 1.2rem; border-radius: 8px; background: #10b981; border: none; color: white; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);" aria-label="Button">Set My Budget</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <header>
+            <div class="logo">Save<span>Smart</span></div>
+            <button class="burger-btn" id="burger-toggle" aria-label="Burger Toggle">☰</button>
+            <div class="user-profile">
+                <span>Welcome</span>
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=80&h=80&q=80" alt="User Avatar">
+            </div>
+        </header>
+
+        <!-- Dynamic Overview metrics -->
+        <section class="overview-cards">
+            <div class="card balance">
+                <p>Total Budget / Balance</p>
+                <h2 id="total-balance-display">$0.00</h2>
+                <span class="trend up" id="budget-status">Waiting for input</span>
+            </div>
+            <div class="card expenses">
+                <p>Expenses</p>
+                <h2 id="total-expenses-display">$0.00</h2>
+                <span class="trend down" id="expense-status">No expenses yet</span>
+            </div>
+            <div class="card savings" style="background: #e6f7f0; border-color: #10b981;">
+                <p style="color: #059669;">AI Budget Suggestion</p>
+                <h2 id="savings-goal-display" style="color: #10b981; font-size: 1.2rem; margin-top: 0.5rem; line-height: 1.4;">50% Needs, 30% Wants, 20% Savings</h2>
+                <div style="font-size: 0.85rem; color: #059669; margin-top: 0.5rem;" id="budget-estimates">
+                    Enter budget to see breakdown.
+                </div>
+            </div>
+        </section>
+
+        <!-- Transaction Feed -->
+        <section class="transaction-section">
+            <div class="section-header">
+                <h3>Recent Transactions</h3>
+                <button class="btn-add" id="btn-open-add-transaction" aria-label="Btn Open Add Transaction">Add Transaction</button>
+            </div>
+            <div class="transaction-list" id="transaction-list-feed">
+                <!-- Injected dynamically by script.js -->
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 SaveSmart. Smart tracking for a better future.</p>
+        </footer>
+    </div>
+
+    <!-- 2. Dynamic Transaction Creation Modal -->
+    <div id="transactionModal" class="modal" style="z-index: 10020;">
+        <div class="modal-content" style="max-width: 550px; padding: 3rem;">
+            <span class="close-modal" id="btn-close-transaction-modal">&times;</span>
+            <h2 class="serif" style="font-size: 2.2rem; margin-bottom: 1rem; color: #111;">Add Transaction</h2>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 2rem;">Log a fresh income stream or expense payout to your smart ledger balances.</p>
+
+            <form id="transaction-form" onsubmit="event.preventDefault(); submitNewTransaction();">
+                <div style="display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 2rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                        <label style="font-size: 0.8rem; font-weight: 700; color: #111; text-transform: uppercase;">Merchant / Income Source</label>
+                        <input type="text" id="txn-merchant" required placeholder="e.g. Amazon Store, Client Invoice" style="padding: 0.8rem 1rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; font-family: inherit; font-size: 0.95rem; outline: none;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label style="font-size: 0.8rem; font-weight: 700; color: #111; text-transform: uppercase;">Amount ($)</label>
+                            <input type="number" step="0.01" id="txn-amount" required placeholder="e.g. 45.00" style="padding: 0.8rem 1rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; font-family: inherit; font-size: 0.95rem; outline: none;">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label style="font-size: 0.8rem; font-weight: 700; color: #111; text-transform: uppercase;">Type</label>
+                            <select id="txn-type" style="padding: 0.8rem 1rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; font-family: inherit; font-size: 0.95rem; outline: none;">
+                                <option value="expense">Expense (-)</option>
+                                <option value="income">Income (+)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label style="font-size: 0.8rem; font-weight: 700; color: #111; text-transform: uppercase;">Category</label>
+                            <select id="txn-category" style="padding: 0.8rem 1rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; font-family: inherit; font-size: 0.95rem; outline: none;">
+                                <option value="Lifestyle">Lifestyle</option>
+                                <option value="Dining">Dining</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Income">Income</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                            <label style="font-size: 0.8rem; font-weight: 700; color: #111; text-transform: uppercase;">Date</label>
+                            <input type="date" id="txn-date" required style="padding: 0.8rem 1rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; font-family: inherit; font-size: 0.95rem; outline: none;">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="ad-btn" style="width: 100%; padding: 1.1rem; border-radius: 8px;" aria-label="Button">Synchronize Transaction</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Timed Scarcity Premium Upgrade Modal -->
+    <div id="premiumUpgradeModal" class="modal" style="z-index: 10050;">
+        <div class="modal-content" style="max-width: 650px; text-align: center; padding: 4rem 3rem;">
+            <div style="font-size: 3.5rem; margin-bottom: 1.5rem;">💸</div>
+            <span class="ad-tag" style="display: inline-block; margin-bottom: 1rem;">SAVESMART PLATINUM</span>
+            <h2 style="font-size: 2.8rem; font-family: inherit; font-weight:700; margin-bottom: 1rem; color: #111;">Access Premium Finance Suite</h2>
+            <p style="font-size: 1.15rem; color: #666; line-height: 1.6; margin-bottom: 2.5rem;">Unlock the complete financial automation blueprint containing custom category breakdowns, CSV exports, multi-currency wallets, and completely disable all visual sponsorships.</p>
+
+            <div style="background: #fdf2f2; padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(16, 185, 129, 0.15); margin-bottom: 3rem;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem;">SCARCITY REGISTRATION ENROLLMENT CLOSES IN</div>
+                <div id="scarcity-countdown" style="font-size: 2.2rem; font-weight: 800; color: #111; font-family: monospace; letter-spacing: 2px;">10:00</div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <button class="ad-btn" id="btn-upgrade-now" style="width: 100%; padding: 1.2rem; font-size: 1.2rem; background: linear-gradient(135deg, #10b981, #059669); border: none; color: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);" aria-label="Btn Upgrade Now">
+                    Upgrade for $1.99 / mo
+                </button>
+                <button class="btn-secondary" id="btn-skip-upgrade" style="width: 100%; padding: 1rem; border: none; background: transparent; color: #747d8c; font-weight: 700; cursor: pointer;" aria-label="Btn Skip Upgrade">
+                    No thanks, keep standard tier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Interstitial Skip-Ad Modal Overlay -->
+    <div id="interstitialModal" class="modal" style="z-index: 10100;">
+        <div class="modal-content" style="max-width: 600px; text-align: center; padding: 3rem; position:relative;">
+            <span class="ad-tag" style="display: inline-block; margin-bottom: 1.5rem;">SPONSORED INVESTMENT</span>
+            
+            <div class="ad-sponsor-container" style="display: flex; gap: 2rem; align-items: center; text-align: left; margin-bottom: 2.5rem;">
+                <img id="interstitial-ad-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=200&h=200&q=80" style="width: 140px; height: 140px; border-radius: 12px; object-fit: cover; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+                <div>
+                    <h3 id="interstitial-ad-title" style="font-size: 1.5rem; font-family: inherit; font-weight:700; margin-bottom: 0.5rem; color:#222;">Retire Early</h3>
+                    <p id="interstitial-ad-desc" style="font-size: 0.95rem; color: #555; line-height: 1.6;">Learn the 3 keys to building a passive income stream that lasts. Free webinar tonight.</p>
+                </div>
+            </div>
+
+            <div id="interstitial-ad-promo" style="background: #e6f7f0; padding: 1rem; border-radius: 8px; font-weight: 700; color: #10b981; font-size: 0.9rem; letter-spacing: 0.5px; border: 1px dashed rgba(16, 185, 129, 0.3); margin-bottom: 2.5rem;">
+                CODE "SAVESMART" FOR 20% CASHBACK
+            </div>
+
+            <div style="display: flex; gap: 1.5rem;">
+                <button class="btn-secondary" id="btn-skip-ad" style="flex: 1; padding: 1rem; opacity: 0.4; cursor: not-allowed; border: 1px solid #ccc; background: none; font-weight:700;" disabled aria-label="Btn Skip Ad">
+                    Skip Ad in 5s
+                </button>
+                <button class="ad-btn" id="btn-claim-ad" style="flex: 1; padding: 1rem; background: #10b981; border-color: #10b981; color:white;" aria-label="Btn Claim Ad">
+                    Claim Offer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Dynamic Inspiration Sync Celebration Success Modal -->
+    <div id="celebrationModal" class="modal" style="z-index: 10200;">
+        <div class="modal-content" style="max-width: 500px; text-align: center; padding: 3rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem; animation: pulse 1.5s infinite;">📈</div>
+            <h2 style="font-size: 2.2rem; font-family: inherit; font-weight:700; margin-bottom: 1rem; color: #111;">Financial Synchronized!</h2>
+            <p style="font-size: 1.05rem; color: #555; line-height: 1.6; margin-bottom: 2.5rem;">Your transaction matrices, ledger balances, and cashflow charts are successfully recalculated and loaded!</p>
+            <button class="ad-btn" id="btn-close-celebration" style="width: 100%; background: #10b981; border-color: #10b981; color: white;" aria-label="Btn Close Celebration">
+                Acknowledge Success
+            </button>
+        </div>
+    </div>
+
+    <!-- 6. Glassmorphic Exit Intent Discount Modal -->
+    <div id="exitIntentModal" class="modal" style="z-index: 10300;">
+        <div class="modal-content" style="max-width: 600px; text-align: center; padding: 4rem 3rem;">
+            <span class="close-modal" id="closeExitIntent">&times;</span>
+            <span class="ad-tag" style="display:inline-block; margin-bottom:1rem; position:static;">WAIT! BEFORE YOU LEAVE...</span>
+            <h2 style="font-size: 2.8rem; font-family: inherit; font-weight:700; margin-bottom: 1rem; color: #111;">Claim 80% Off Platinum Access</h2>
+            <p style="font-size: 1.15rem; color: #666; line-height: 1.6; margin-bottom: 2.5rem;">Unlock the complete micro-wealth automated tracking modules and turn off all sponsors forever.</p>
+            <button class="ad-btn" style="width: 100%; font-size: 1.2rem; padding: 1.1rem; background: #10b981; border: none; color: white; border-radius: 12px;" aria-label="Button">
+                Claim 80% Discount Now
+            </button>
+            <p style="margin-top: 1.5rem; font-size: 0.95rem;"><a href="/" id="declineExitIntent" style="color: #999; text-decoration: underline;">No thanks, I prefer standard tier</a></p>
+        </div>
+    </div>
+
+    <!-- 7. Premium Mock Ad Blocker Modal -->
+    <div id="adBlockModal" class="modal" style="z-index: 10400; background: rgba(0,0,0,0.92);">
+        <div class="modal-content" style="max-width: 500px; text-align: center; padding: 3rem;">
+            <h2 style="font-size: 2.2rem; color: #ef4444; font-family: inherit; font-weight:700; margin-bottom: 1rem;">Ad Blocker Detected</h2>
+            <p style="font-size: 1.05rem; color: #555; line-height: 1.6; margin-bottom: 2.5rem;">We support our micro-wealth calculator platforms through sponsors. Please consider whitelisting our site or upgrade to support creators!</p>
+            <div style="display: flex; gap: 1rem;">
+                <button class="ad-btn" style="flex: 1; background: #10b981; border-color: #10b981; color: white;" onclick="location.reload()" aria-label="Button">I Whitelisted</button>
+                <button class="ad-btn" style="flex: 1; background: #ef4444; border-color: #ef4444; color: white;" id="btn-adblock-premium" aria-label="Btn Adblock Premium">Go Premium ($1.99)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. Decoupled Floating Programmatic Ad Banner -->
+    <div class="floating-ad-banner" id="floating-ad-banner" style="display: none;">
+        <!-- Injected programmatically by script.js -->
+    </div>
+
+    <script src="script.min.js"></script>
+
+</body>
+</html>
